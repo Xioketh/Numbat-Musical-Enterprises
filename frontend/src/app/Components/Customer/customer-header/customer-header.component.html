@@ -1,0 +1,44 @@
+<header class="header">
+  <div class="logo">
+<!--    <img src="assets/img/music.png" alt="Music Store Logo">-->
+    <div class="logo-text">
+      <h1>Numbat Musical Enterprises</h1>
+      <span>Where Passion Meets Play</span>
+    </div>
+  </div>
+
+  <div class="header-actions">
+<!--    <div class="header-icons">-->
+<!--      <button mat-button class="menu-button" *ngIf="showMyOrders" (click)="salesView()"-->
+<!--              style="color: #F28123;">-->
+<!--        <mat-icon matBadge="{{sales.length}}" matBadgeSize="small" matBadgeColor="primary"><i-->
+<!--          class="fa-solid fa-box"></i></mat-icon>-->
+<!--      </button>-->
+<!--      <button mat-button class="menu-button" (click)="cartView()" style="color: #4380a3;">-->
+<!--        <mat-icon matBadge="{{cartProdcuts.length}}" matBadgeSize="small" matBadgeColor="warn"><i-->
+<!--          class="fa fa-cart-plus" aria-hidden="true"></i></mat-icon>-->
+<!--      </button>-->
+<!--      <button mat-button class="menu-button" (click)="onLog()" style="color: #4380a3;">-->
+<!--        <mat-icon matBadge="" matBadgeSize="small" matBadgeColor="warn"><i class="fa fa-user"></i>-->
+<!--        </mat-icon>-->
+<!--      </button>-->
+<!--    </div>-->
+
+    <div class="header-icons">
+      <button mat-button class="menu-button" *ngIf="showMyOrders" (click)="salesView()" style="color: #F28123;">
+        <fa-icon [icon]="faBox" [size]="'lg'"></fa-icon>
+        <span class="badge primary-badge small">{{sales.length}}</span>
+      </button>
+
+      <button mat-button class="menu-button" (click)="cartView()" style="color: #F28123;">
+        <fa-icon [icon]="faCartPlus" [size]="'lg'"></fa-icon>
+        <span class="badge warn-badge small">{{cartProdcuts.length}}</span>
+      </button>
+
+      <button mat-button class="menu-button" (click)="onLog()" style="color: #e80505;">
+        <fa-icon [icon]="faUser" [size]="'lg'"></fa-icon>
+      </button>
+    </div>
+  </div>
+</header>
+

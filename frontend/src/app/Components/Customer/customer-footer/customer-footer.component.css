@@ -1,0 +1,229 @@
+
+.single-logo-item img {
+    max-width: 180px;
+    margin: 0 auto;
+  }
+  
+  .logo-carousel-section {
+    background-color: #f5f5f5;
+    padding: 50px 0;
+  }
+  
+  .footer-area {
+    background-color: #051922;
+    color: #fff;
+    padding: 150px 0;
+  }
+  
+  h2.widget-title {
+    font-size: 24px;
+    font-weight: 500;
+    position: relative;
+    padding-bottom: 20px;
+    color: #fff;
+  }
+  
+  h2.widget-title:after {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 20px;
+    height: 2px;
+    background-color: #F28123;
+    content: "";
+  }
+  
+  .footer-box p {
+    color: #fff;
+    opacity: 0.7;
+    line-height: 1.8;
+  }
+  
+  .footer-box ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .footer-box ul li {
+    opacity: 0.7;
+    margin-bottom: 10px;
+    line-height: 1.8;
+  }
+  
+  .footer-box ul li:last-child {
+    margin-bottom: 0;
+  }
+  
+  .footer-box.subscribe form input[type=email] {
+    border: none;
+    background-color: #012738;
+    width: 78%;
+    padding: 15px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    color: #fff;
+  }
+  
+  .footer-box.subscribe form button {
+    width: 20%;
+    border: none;
+    background-color: #012738;
+    color: #F28123;
+    padding: 14px 0;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .footer-box.subscribe form button:focus {
+    outline: none;
+  }
+  
+ 
+  .single-latest-news {
+    -webkit-box-shadow: 0 0 20px #dddddd;
+    box-shadow: 0 0 20px #dddddd;
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  .single-latest-news:hover {
+    -webkit-box-shadow: 0 0 0;
+    box-shadow: 0 0 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+  
+  .single-logo-item {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  .single-logo-item:hover {
+    opacity: 0.7;
+  }
+  
+  .footer-box.pages ul li a {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  .footer-box.pages ul li:hover a {
+    color: #F28123;
+  }
+  
+  .footer-box.subscribe form button {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  .footer-box.subscribe form button:hover {
+    background-color: #F28123;
+    color: #051922;
+  }
+  
+  .social-icons ul li:hover a {
+    color: #F28123;
+  }
+  
+  .social-icons ul li a {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  ul.social-link-team li a {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  ul.social-link-team li a:hover {
+    background-color: #051922;
+    color: #F28123;
+  }
+  
+  .counter-box {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  .counter-box:hover {
+    -webkit-box-shadow: 0 0 80px #6f6f6f;
+    box-shadow: 0 0 80px #6f6f6f;
+  }
+  
+  input[type="submit"] {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+    border-radius: 50px !important;
+  }
+  
+  input[type="submit"]:hover {
+    background-color: #051922;
+    color: #F28123;
+  }
+  
+  div.owl-controls, .owl-controls div {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  div.owl-controls div.owl-nav div:hover {
+    opacity: 0.7;
+  }
+  
+  .pagination-wrap ul li a {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  .pagination-wrap ul li:hover a {
+    background-color: #F28123;
+  }
+  
+  .icons a i {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  .icons a:hover i {
+    color: #F28123;
+  }
+  
+  .tof-text a.tof-btn {
+    margin-top: 15px;
+    display: inline-block;
+  }
+  
+  .single-pricing-table {
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+  
+  .single-pricing-table:hover {
+    -webkit-box-shadow: 0 0 20px #ddd;
+    box-shadow: 0 0 20px #ddd;
+  }
+  
+  
+  .product-image img:hover {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+  
+  
+
+
+

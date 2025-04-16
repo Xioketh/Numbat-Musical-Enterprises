@@ -1,0 +1,175 @@
+<div class="content">
+    <div class="page-header">
+    <div class="page-title">
+    <h4>Product List</h4>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-sm-6 col-12 d-flex">
+        <div class="dash-count das3">
+            <div class="dash-counts">
+                <h4>{{countObj.allActiveProductsCount}}</h4>
+                <h5>Total Products</h5>
+            </div>
+            <div class="dash-imgs">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6 col-12 d-flex">
+        <div class="dash-count das1">
+            <div class="dash-counts">
+                <h4>{{countObj.allOutProductsCount}}</h4>
+                <h5>Total Stock Out Products</h5>
+            </div>
+            <div class="dash-imgs">
+                <i class="fa-solid fa-0"></i>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="page-btn text-end m-3">
+      <a routerLink="addproduct" class="btn"><i class="fa-solid fa-plus"></i> Add New Product</a>
+      </div>
+    <div class="card">
+    <div class="card-body">
+    <div class="table-top">
+    <div class="search-set">
+    <div class="search-path">
+        <input class="form-control" placeholder="Search" type="text" (keyup)="applyFilter($event)" #input style="width: 200px;;">
+    </div>
+    </div>
+    </div>
+
+
+    <div class="table-responsive">
+        <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource" matSort>
+
+              <ng-container matColumnDef="image1">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Image</th>
+                <td mat-cell *matCellDef="let row"><img class="m-2" [src]=row.image1 alt="" style="width: 75px; height: 75px;"></td>
+              </ng-container>
+
+              <ng-container matColumnDef="productID">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Product ID</th>
+                <td mat-cell *matCellDef="let row"> {{row.productID}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="productName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Name</th>
+                <td mat-cell *matCellDef="let row"> {{row.productName}} </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="qty">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Availabe Qty </th>
+                <td mat-cell *matCellDef="let row"> {{row.qty}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
+                <td mat-cell *matCellDef="let row"> Rs.{{row.price}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
+                <td mat-cell *matCellDef="let row"> {{row.category}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
+                <td mat-cell *matCellDef="let row">
+                  <button mat-icon-button color="success" (click)="productPreview(row,1)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" (click)="productPreview(row,2)">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="productDelete(row)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+
+              <tr class="nodata" *matNoDataRow>
+
+                <td class="mat-cell" colspan="6" rowspan="2">No data matching the filter "{{input.value}}"</td>
+              </tr>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                       showFirstLastButtons
+                       aria-label="Select page of periodic elements">
+        </mat-paginator>
+          </div>
+    </div>
+    </div>
+    </div>
+
+    </div>
+
+
+    <ng-template #productPopup let-modal>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{{selectedProduct.productID}}</h4>
+        </div>
+
+        <div>
+          <form class="form p-4" [formGroup]="productForm">
+            <div class="flex">
+              <div class="col-12 mb-4">
+                  <span>Product Images</span>
+                  <div class="image-container">
+                    <img [src]=selectedProduct.image1 class="product-image">
+                    <img [src]=selectedProduct.image2 class="product-image">
+                    <img [src]=selectedProduct.image3 class="product-image">
+                  </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-6">
+                    <span>Product Name</span>
+                    <input class="form-control" type="text" formControlName="productName" [disabled]="!enableEdit">
+                </div>
+                <div class="col-6">
+                    <span>Category</span>
+                    <input class="form-control" type="text" value={{selectedProduct.category}} disabled>
+                </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-6">
+                    <span>Price</span>
+                    <input class="form-control" type="text" formControlName="price" [disabled]="!enableEdit">
+                </div>
+                <div class="col-6">
+                    <span>Available Qty</span>
+                    <input class="form-control" type="number" formControlName="qty" [disabled]="!enableEdit" (change)="stockValidate($event)">
+    <!--              </label>-->
+                </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-6">
+                    <span>Create Date</span>
+                    <input class="form-control" type="text" value={{selectedProduct.createDate}} disabled>
+                </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-12">
+                    <span>Description</span>
+                    <textarea class="form-control" [disabled]="!enableEdit" formControlName="description" style="height: 110px;">{{selectedProduct.description}}</textarea>
+                </div>
+              </div>
+
+            </div>
+            <button class="btn btn-success" *ngIf="enableEdit" (click)="updatProduct()" >Update</button>
+          </form>
+        </div>
+
+      </div>
+    </ng-template>
