@@ -47,7 +47,7 @@ public class DashboardService {
                     .count();
 
             int totalAmount = allSales.stream()
-                    .mapToInt(Sales::getTotalAmount)
+                    .mapToInt(Sales::getFinalAmount)
                     .sum();
 
             int totalQtySold = allSales.stream()

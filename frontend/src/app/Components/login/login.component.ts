@@ -39,7 +39,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    localStorage.clear();
+    if (typeof window !== 'undefined' && localStorage.length > 0) {
+      localStorage.clear();
+    }
   }
 
   onSubmit() {
@@ -82,6 +84,11 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('address', data.user.adress);
     localStorage.setItem('role', data.user.role[0].roleName);
     localStorage.setItem('userID', data.user.userId);
+
+    if (!(data.user.discount_rate === null || data.user.user_grade  === null)){
+      localStorage.setItem('user_grade', data.user.user_grade);
+      localStorage.setItem('discount_rate', data.user.discount_rate);
+    }
   }
 
 

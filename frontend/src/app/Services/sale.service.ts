@@ -31,6 +31,12 @@ export class SaleService {
     return this._http.post(this.baseURL + "/getReportData", fm);
   }
 
+  mounthlyPayment(order_id: string): Observable<any> {
+    const fm = new FormData();
+    fm.append('order_id', order_id);
+    return this._http.post(this.baseURL + "/mounthlyPayment", fm);
+  }
+
   getCustomerSale(paylord: any): Observable<any> {
     return this._http.post(this.baseURL + "/getCustomerSales", paylord);
   }

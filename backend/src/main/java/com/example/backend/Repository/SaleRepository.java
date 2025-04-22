@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,15 +23,21 @@ public interface SaleRepository extends JpaRepository<Sales,Long> {
     @Query(value = "SELECT * FROM sales WHERE user_id = ?1", nativeQuery = true)
     List<Sales> getCustomerSales(String userId);
 
-//    @Query(value = "SELECT * FROM sales WHERE sold_date BETWEEN ?1 AND ?2", nativeQuery = true)
-//    List<SaleDto> getReportData(String startDate, String endDate);
     @Query(value = "SELECT * FROM sales WHERE sold_date BETWEEN ?1 AND ?2", nativeQuery = true)
     List<Sales> getReportData(String startDate, String endDate);
 
-//    @Query(value = "SELECT * FROM sales WHERE sold_date BETWEEN :startDate AND :endDate", nativeQuery = true)
-//    List<SaleDto> getReportData(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    @Query(value = "SELECT " +
+            "    IFNULL(SUM(total_amount), 0) AS total_amount," +
+            "    user_id " +
+            "FROM " +
+            "    sales " +
+            "WHERE " +
+            "    sold_date BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW() " +
+            "AND user_id=?1 AND status =1 " +
+            "GROUP BY " +
+            "    user_id;", nativeQuery = true)
+    int getWithinYearSales(String userId);
 
+    Optional<Sales> getSalesBySaleId(String userID);
 
-//    @Query(value = "SELECT * FROM sales WHERE sold_date BETWEEN (?1, 'YYYY-MM-DD') AND TO_DATE(?2, 'YYYY-MM-DD')", nativeQuery = true)
-//    List<SaleDto> getReportData(String startDate, String endDate);
 }

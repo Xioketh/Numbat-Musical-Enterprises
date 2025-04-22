@@ -235,3 +235,85 @@ body {
 }
 
 
+.profile-container {
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.profile-item {
+  margin-bottom: 8px;
+}
+
+.grade-gold {
+  color: goldenrod;
+  font-weight: bold;
+}
+
+.grade-silver {
+  color: silver;
+  font-weight: bold;
+}
+
+.grade-platinum {
+  color: #4e7ac7;
+  font-weight: bold;
+}
+
+.discount {
+  font-size: 12px;
+  margin-left: 8px;
+  color: green;
+}
+
+.lay-by {
+  font-weight: bold;
+  color: red;
+}
+
+.full-payment {
+  /*font-size: 8px;*/
+  font-weight: bold;
+  color: green;
+}
+
+.custom-width {
+  max-width: 1800px;
+}
+
+.detail-item {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  height: 100%;
+}
+
+.month-indicator {
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.month-indicator.bg-success {
+  color: white;
+}
+
+.month-number {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.month-status {
+  display: block;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+.progress-container {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+
+
+

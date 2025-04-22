@@ -61,6 +61,20 @@ export class AdminUsersComponent {
       },
     );
   }
+
+  getGradeClass(grade: string): string {
+    switch (grade?.toLowerCase()) {
+      case 'gold':
+        return 'grade-gold';
+      case 'silver':
+        return 'grade-silver';
+      case 'platinum':
+        return 'grade-platinum';
+      default:
+        return 'grade-default';
+    }
+  }
+
 }
 
 

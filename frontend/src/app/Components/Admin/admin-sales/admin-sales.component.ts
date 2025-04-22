@@ -26,8 +26,10 @@ export class AdminSalesComponent {
     'saleId',
     'qtyTot',
     'soldDate',
+    'discount_rate',
     'totalAmount',
-    'userId'
+    'userId',
+    'action'
   ];
 
   dataSource!: MatTableDataSource<any>;
@@ -40,11 +42,15 @@ export class AdminSalesComponent {
   startDate: string | undefined;
   endDate: string | undefined;
 
+  selectedSale: any = [];
+
   @ViewChild('reportGenrate') reportGenrate: ElementRef | undefined;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('content', { static: false }) el!: ElementRef;
   @ViewChild('pdftable') pdftable!: ElementRef;
+  @ViewChild('SelectedSalePreview') SelectedSalePreview: ElementRef | undefined;
+
 
   constructor(private fb: FormBuilder, private saleService: SaleService, private dashBoardService: DashbordService, private modal: NgbModal) {
     this.getAllSales();
@@ -150,6 +156,25 @@ export class AdminSalesComponent {
     //     document.body.removeChild(a);
     //   });
     // });
+  }
+
+  salePreview(data: any) {
+    this.selectedSale = [];
+    this.selectedSale = data
+
+    console.log(data)
+    console.log(data.saleItemsDtos)
+    this.modalRef = this.modal.open(this.SelectedSalePreview, {centered: true});
+  }
+
+  closePopup() {
+    this.modalRef.close();
+  }
+
+  calculateEndDate(startDate: string, months: number): string {
+    const date = new Date(startDate);
+    date.setMonth(date.getMonth() + months);
+    return date.toISOString().split('T')[0];
   }
 
 

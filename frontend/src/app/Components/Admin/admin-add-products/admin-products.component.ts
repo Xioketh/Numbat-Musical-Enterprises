@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { HttpClient } from '@angular/common/http';
 import {Router} from "@angular/router";
 import {ProductService} from "../../../Services/product.service";
+import JsBarcode from 'jsbarcode';
 
 @Component({
   selector: 'app-admin-products',
@@ -138,29 +139,49 @@ export class AdminProductsComponent {
 
   }
 
-  submitOtherData(data:any) {
-    this.productData.productID=data.productID
+  submitOtherData(data: any) {
+    this.productData.productID = data.productID;
+
     this.productService.saveproduct(this.productData).subscribe(
       (response) => {
-        this.enableLoader=false;
+        this.enableLoader = false;
         this.clearForm();
+
         Swal.fire({
-          title: data.productID+' Product Save Successfully!',
+          title: `${data.productID} Product Saved Successfully!`,
+          text: 'Click OK to download the barcode.',
           icon: 'success',
           confirmButtonText: 'Ok',
           allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
+            this.downloadBarcode(data.productID);
             this.router.navigateByUrl('/admin/product-list');
           }
         });
       },
       (error) => {
-        this.enableLoader=false;
+        this.enableLoader = false;
         this.clearForm();
-        Swal.fire('Error!', ' Product Save Unsuccess', 'error');
+        Swal.fire('Error!', 'Product Save Unsuccessful', 'error');
       }
     );
+  }
+
+  downloadBarcode(productCode: string) {
+    const canvas = document.createElement('canvas');
+    JsBarcode(canvas, productCode, {
+      format: 'CODE128',
+      displayValue: true,
+      height: 100,
+      width: 2,
+      fontSize: 16,
+    });
+
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = `${productCode}-barcode.png`;
+    link.click();
   }
 
   onSubmit(): void {

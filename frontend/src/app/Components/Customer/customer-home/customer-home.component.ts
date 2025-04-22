@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
 import QRCode from 'qrcode';
 import {SaleService} from "../../../Services/sale.service";
 import {ProductService} from "../../../Services/product.service";
+import {usersService} from "../../../Services/users.service";
+import {catchError, map, Observable, of} from "rxjs";
 
 
 interface Category {
@@ -45,6 +47,7 @@ export class CustomerHomeComponent {
     'orderId',
     'qtyTot',
     'totalAmount',
+    'discount_rate',
     'soldDate',
     'action'
   ];
@@ -77,11 +80,14 @@ export class CustomerHomeComponent {
   selectedProduct: any = [];
   selectedSale: any = [];
   isGuest: boolean = false;
+  isLoyaltyCustomer: boolean = false;
 
   modalRef: any;
   grandTotal: any = 0;
   grandQty: number | undefined;
   userName: any;
+  discount_rate: any;
+  user_grade: any;
 
   categories: Category[] = [
     {value: '', viewValue: 'All'},
@@ -97,8 +103,10 @@ export class CustomerHomeComponent {
   @ViewChild('cart') cart: ElementRef | undefined;
   @ViewChild('viewProduct') viewProduct: ElementRef | undefined;
   @ViewChild('sale') sale: ElementRef | undefined;
+  @ViewChild('profile') profile: ElementRef | undefined;
   @ViewChild('SelectedSalePreview') SelectedSalePreview: ElementRef | undefined;
-  constructor(private saleService: SaleService, private router: Router, private fb: FormBuilder, private productService: ProductService, private modal: NgbModal, private _Activatedroute: ActivatedRoute) {
+
+  constructor(private userSercice: usersService, private saleService: SaleService, private router: Router, private fb: FormBuilder, private productService: ProductService, private modal: NgbModal, private _Activatedroute: ActivatedRoute) {
     this.getAllProducts();
     this.checkRole();
 
@@ -112,29 +120,37 @@ export class CustomerHomeComponent {
   }
 
   checkRole() {
-    const role = localStorage.getItem('role');
-    if (role === 'Guest') {
-      this.isGuest = true;
-    }
+    if (typeof window !== 'undefined' && localStorage) {
+      const role = localStorage.getItem('role');
+      if (role === 'Guest') {
+        this.isGuest = true;
+      } else if (role === 'Customer') {
+        this.userName = localStorage.getItem('userName');
 
-    if (role == 'Customer') {
-      this.userName = localStorage.getItem('userName');
-      const paylord = {
-        userId: localStorage.getItem('userID')
+
+       this.getCustomerSales();
       }
-      this.saleService.getCustomerSale(paylord).subscribe(
-        (response) => {
-          this.sales = response
-
-          this.dataSource = new MatTableDataSource(this.sales);
-          this.dataSource.sort = this.sort;
-          this.dataSource.paginator = this.paginator;
-        },
-        (error) => {
-          console.error('Error product:', error);
-        }
-      );
+    } else {
+      console.warn('localStorage not available – probably running in SSR or build time');
     }
+  }
+
+  getCustomerSales(){
+    this.sales = [];
+    const paylord = {
+      userId: localStorage.getItem('userID')
+    };
+    this.saleService.getCustomerSale(paylord).subscribe(
+      (response) => {
+        this.sales = response;
+        this.dataSource = new MatTableDataSource(this.sales);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      },
+      (error) => {
+        console.error('Error product:', error);
+      }
+    );
   }
 
   getAllProducts() {
@@ -160,6 +176,10 @@ export class CustomerHomeComponent {
 
   openSalesAccess() {
     this.modalRef = this.modal.open(this.sale, {centered: true});
+  }
+
+  openProfileAccess() {
+    this.modalRef = this.modal.open(this.profile, {centered: true});
   }
 
   closePopup() {
@@ -234,11 +254,6 @@ export class CustomerHomeComponent {
           this.closePopup();
           const url = 'login';
           this.router.navigate(['/login'], {queryParams: {my_object: JSON.stringify(this.cartProducts)}});
-          // this.router.navigate([url], {
-          //   state: {
-          //     cartProducts: this.cartProducts
-          //   }
-          // });
         } else {
           return;
         }
@@ -254,46 +269,190 @@ export class CustomerHomeComponent {
         }
       }
 
-      const paylord = {
-        userId: localStorage.getItem('userID'),
-        totalAmount: this.grandTotal,
-        qtyTot: this.grandQty,
-        productsDto: this.cartProducts
-      }
+      this.checkLoyaltyCustomer().subscribe((isLoyalty) => {
+        this.isLoyaltyCustomer = isLoyalty;
+        console.log('isLoyaltyCustomer::', isLoyalty);
 
-      this.saleService.addSale(paylord).subscribe(
-        data => {
-          Swal.fire({
-            title: 'Order Placed Success!',
-            html: '<span style="color: #F28123; font-weight: bold;">You will receive a confirmation Email & Downloading Sale QR Code</span>',
-            icon: 'success',
-            allowOutsideClick: false
-          }).then((result) => {
-            if (result.isConfirmed) {
-              this.closePopup();
-              this.loading = true;
-              // qr
-              const qrValue = data.saleId;
-              const canvas = document.createElement('canvas');
+        const finalAmount = (this.grandTotal * (100 - (this.discount_rate || 0))) / 100;
 
-              QRCode.toCanvas(canvas, qrValue, {errorCorrectionLevel: 'H'}, (error) => {
-                if (error) {
-                  console.error('Error generating QR code:', error);
-                } else {
-                  this.downloadQRImage(canvas, qrValue);
-                }
-              });
-              // qr end
-              this.sendMail(data);
-            }
-          });
-        },
-        err => {
-          Swal.fire('errr!', ' unuccessfully!', 'error');
+        let title = '';
+        let html = '';
+
+        if (isLoyalty) {
+          title = '🎉 Congratulations!';
+          html = `<p>You are a <strong>${this.user_grade.toUpperCase()}</strong> member of ours!</p>
+        <p>You're entitled to a <strong>${this.discount_rate}% discount</strong>.</p>
+        <p>Your final payment amount is: <strong>$ ${finalAmount}</strong></p>
+        <br>
+        <p><strong>How would you like to proceed with this sale?</strong></p>`;
+
+        } else {
+          title = '';
+          html = `<p><strong>How would you like to proceed with this sale?</strong></p>`;
         }
-      );
+
+
+        Swal.fire({
+          title: title,
+          html: html,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: '💳 Full Payment',
+          cancelButtonText: '🛍️ Laybuy',
+          allowOutsideClick: false,
+          customClass: {
+            title: 'swal2-title',
+            htmlContainer: 'swal2-html-container',
+            confirmButton: 'swal2-confirm',
+            cancelButton: 'swal2-cancel'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const paylord = {
+              userId: localStorage.getItem('userID'),
+              totalAmount: this.grandTotal,
+              qtyTot: this.grandQty,
+              productsDto: this.cartProducts,
+              finalAmount: this.isLoyaltyCustomer ? finalAmount : this.grandTotal,
+              discount_rate: this.isLoyaltyCustomer ? this.discount_rate : 0,
+              isFullPayment: true,
+              status:1
+            }
+            console.log('Full payment!!!')
+            this.handleFullPayment(paylord);
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            console.log('LayBy payment!!!')
+            this.handleLaybuyPayment(this.isLoyaltyCustomer ? finalAmount : this.grandTotal);
+          }
+        });
+      });
     }
   }
+
+  handleFullPayment(paylord) {
+    this.saleService.addSale(paylord).subscribe(
+      data => {
+        Swal.fire({
+          title: 'Order Placed Success!',
+          html: '<span style="color: #30475e; font-weight: bold;">Click Ok to Download Sale QR Code</span>',
+          icon: 'success',
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.closePopup();
+            this.loading = true;
+            // qr
+            const qrValue = data.saleId;
+            const canvas = document.createElement('canvas');
+
+            QRCode.toCanvas(canvas, qrValue, {errorCorrectionLevel: 'H'}, (error) => {
+              if (error) {
+                console.error('Error generating QR code:', error);
+              } else {
+                this.downloadQRImage(canvas, qrValue);
+              }
+            });
+            this.reload();
+            // Swal.fire(
+            //   'Lay-By Confirmed!',
+            //   `You will pay $${depositAmount} now and $${monthly} per month for 6 months.`,
+            //   'success'
+            // );
+          }
+        });
+      },
+      err => {
+        Swal.fire('errr!', ' unuccessfully!', 'error');
+      }
+    );
+  }
+
+  handleLaybuyPayment(amountToPay) {
+
+    Swal.fire({
+      title: 'Lay-By Payment',
+      html: `
+        <p>You need to pay at least <strong>20%</strong> upfront to continue with Lay-By.</p>
+        <p>Total Amount: <strong>$${amountToPay}</strong></p>
+        <label>Enter your deposit percentage (min 20%):</label>
+        <input type="number" id="depositInput" class="swal2-input" placeholder="e.g. 25" min="20" max="100">
+        <div id="summary" style="margin-top:10px; text-align:left;"></div>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        const depositRate: any = (document.getElementById('depositInput') as HTMLInputElement)?.value;
+        if (!depositRate || depositRate < 20 || depositRate > 100) {
+          Swal.showValidationMessage('Please enter a valid percentage (min 20)');
+          return false;
+        }
+        return Number(depositRate);
+      },
+      didOpen: () => {
+        const input = document.getElementById('depositInput') as HTMLInputElement;
+        const summaryDiv = document.getElementById('summary') as HTMLDivElement;
+
+        input.addEventListener('input', () => {
+          const val = parseFloat(input.value);
+          if (val >= 20 && val <= 100) {
+            const depositAmount = (amountToPay * val / 100).toFixed(2);
+            const restAmount = (amountToPay - Number(depositAmount)).toFixed(2);
+            const monthly = (Number(restAmount) / 6).toFixed(2);
+            summaryDiv.innerHTML = `
+              <p><strong>Initial Payment:</strong> $${depositAmount}</p>
+              <p><strong>Remaining Amount:</strong> $${restAmount}</p>
+              <p><strong>Monthly Payment (for 6 months):</strong> $${monthly}</p>
+            `;
+          } else {
+            summaryDiv.innerHTML = '';
+          }
+        });
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Continue',
+      cancelButtonText: 'Cancel'
+    }).then(result => {
+      if (result.isConfirmed) {
+        const depositRate = result.value;
+        const depositAmount = (amountToPay * depositRate / 100).toFixed(2);
+        const restAmount = (amountToPay - Number(depositAmount)).toFixed(2);
+        const monthly = (Number(restAmount) / 6).toFixed(2);
+
+        const paylord = {
+          userId: localStorage.getItem('userID'),
+          totalAmount: this.grandTotal,
+          qtyTot: this.grandQty,
+          productsDto: this.cartProducts,
+          finalAmount: amountToPay,
+          discount_rate: this.isLoyaltyCustomer ? this.discount_rate : 0,
+          isFullPayment: false,
+          depositAmount: depositAmount,
+          mounthly_payment: monthly,
+          depositRate: depositRate,
+          status:0
+        }
+
+        this.handleFullPayment(paylord);
+      }
+    });
+  }
+
+  checkLoyaltyCustomer(): Observable<boolean> {
+    return this.userSercice.getByUserId().pipe(
+      map(data => {
+        if (data.discount_rate !== 0 && data.user_grade !== null) {
+          this.discount_rate = data.discount_rate;
+          this.user_grade = data.user_grade;
+          return true;
+        }
+        return false;
+      }),
+      catchError(error => {
+        console.error('Error checking loyalty:', error);
+        return of(false);
+      })
+    );
+  }
+
 
   downloadQRImage(canvas: HTMLCanvasElement, qrValue) {
     const dataUrl = canvas.toDataURL();
@@ -360,7 +519,44 @@ export class CustomerHomeComponent {
     this.closePopup();
     this.selectedSale = data
 
+    console.log(data)
     console.log(data.saleItemsDtos)
     this.modalRef = this.modal.open(this.SelectedSalePreview, {centered: true});
   }
+
+  getGradeClass(grade: string | null): string {
+    switch (grade?.toLowerCase()) {
+      case 'gold':
+        return 'grade-gold';
+      case 'silver':
+        return 'grade-silver';
+      case 'platinum':
+        return 'grade-platinum';
+      default:
+        return 'grade-default';
+    }
+  }
+
+  calculateEndDate(startDate: string, months: number): string {
+    const date = new Date(startDate);
+    date.setMonth(date.getMonth() + months);
+    return date.toISOString().split('T')[0];
+  }
+
+  mounthlyPayment(){
+    console.log(this.selectedSale);
+
+    this.saleService.mounthlyPayment(this.selectedSale.saleId).subscribe(
+      data => {
+        this.getCustomerSales();
+        this.closeProductPreviewPopup();
+        // this.salePreview(this.selectedSale);
+        Swal.fire('', 'Monthly fee settled', 'success');
+      },error => {
+
+      }
+    )
+  }
+
+  protected readonly localStorage = localStorage;
 }

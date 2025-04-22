@@ -36,7 +36,7 @@ CREATE TABLE `products` (
   `qty` int DEFAULT NULL,
   `status` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (1,'Guitars and Accessories','2025-04-16T16:57:03.294304600','A classic, versatile electric guitar suitable for all playing styles.','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744792959/npzdwj43rhlaqjoae46t.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744792960/j8kjhrlakxq5zdvf1t4o.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744792961/rlobc1mzeqitquv5jnas.jpg',8500,'P0001','Electric Guitar',2,1),(2,'Amplifiers and Effects','2025-04-16T14:51:44.310905700','A powerful combo amp that delivers iconic tones.\n','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795301/asv3o80mho8s3rauvude.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795302/bl4xbwjibdvrvfc7t9w4.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795304/l3ci7uz7j7jvc05zjx4r.jpg',9500,'P0002','Marshall DSL40CR Tube Amplifier',4,1),(3,'Keyboards and Digital Pianos','2025-04-16T16:08:26.264468100','A compact and portable digital piano with exceptional sound quality.\n','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795361/dq13ognaglg1xslcbhjx.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795362/frrtqhrhqs9rovfrpic8.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795363/tw9smi6gpuoqhusakknh.jpg',100000,'P0003','Yamaha P-125 Digital Piano',1,1),(4,'Drums and Percussion','2025-04-16T14:53:34.786069300','A professional-grade electronic drum set with realistic feel and sounds.\n','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795409/o7zugjxnrkss0oqk37pt.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795411/f1orguzruhfbhrrkdvfo.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795414/b7oribtydq8s7skxv2en.jpg',250000,'P0004','Roland TD-17KVX Electronic Drum Kit',5,1),(5,'Pro Audio Equipment','2025-04-16T14:54:11.244496400','The industry-standard vocal mic for live performances and recordings.','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795448/ufsacmtxhkcvntfcwq8s.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795449/zum0ztweqfjyfyjmoi1r.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1744795450/c6rqjsudg9kmb0zdrkwh.jpg',55000,'P0005','Shure SM58 Microphone',7,1);
+INSERT INTO `products` VALUES (1,'Guitars and Accessories','2025-04-19T17:17:11.336645200','A classic, versatile electric guitar suitable for all playing styles.','http://res.cloudinary.com/ddqccvm2x/image/upload/v1745063198/ktguhrd7gnm7gjse4t4q.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1745063200/c66xn9bwc6lpa0emdgt3.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1745063201/v4v3z5iml4xgh1ujqnca.jpg',550,'P0001','Fender Stratocaster Electric Guitar',18,1),(2,'Amplifiers and Effects','2025-04-19T17:17:58.767205300','A powerful combo amp that delivers iconic tones.\n','http://res.cloudinary.com/ddqccvm2x/image/upload/v1745063277/o1kmunvxlpujuii6dvmn.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1745063278/zf3byfxfhqkkrasxqxma.jpg','http://res.cloudinary.com/ddqccvm2x/image/upload/v1745063279/wxj2kjxzcsrpsfb6yh5p.jpg',800,'P0002','Marshall DSL40CR Tube Amplifier',34,1);
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +87,7 @@ CREATE TABLE `sale_items` (
   `sale_id` varchar(255) DEFAULT NULL,
   `total_amount` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +96,7 @@ CREATE TABLE `sale_items` (
 
 LOCK TABLES `sale_items` WRITE;
 /*!40000 ALTER TABLE `sale_items` DISABLE KEYS */;
-INSERT INTO `sale_items` VALUES (1,'P0001',1,'S0001',8500),(2,'P0003',1,'S0002',100000),(3,'P0003',1,'S0003',100000);
+INSERT INTO `sale_items` VALUES (1,'P0002',1,'S0001',800),(2,'P0001',1,'S0002',550),(3,'P0001',1,'S0003',550),(4,'P0002',1,'S0004',800);
 /*!40000 ALTER TABLE `sale_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -109,13 +109,21 @@ DROP TABLE IF EXISTS `sales`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sales` (
   `id` bigint NOT NULL AUTO_INCREMENT,
+  `deposit_amount` double DEFAULT NULL,
+  `deposit_rate` double DEFAULT NULL,
+  `discount_rate` int DEFAULT NULL,
+  `final_amount` int DEFAULT NULL,
+  `mounthly_payment` double DEFAULT NULL,
+  `payment_type` varchar(255) DEFAULT NULL,
   `qty_tot` int DEFAULT NULL,
+  `remaining_mounths` int DEFAULT NULL,
   `sale_id` varchar(255) DEFAULT NULL,
   `sold_date` varchar(255) DEFAULT NULL,
+  `status` int DEFAULT NULL,
   `total_amount` int DEFAULT NULL,
   `user_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -124,7 +132,7 @@ CREATE TABLE `sales` (
 
 LOCK TABLES `sales` WRITE;
 /*!40000 ALTER TABLE `sales` DISABLE KEYS */;
-INSERT INTO `sales` VALUES (1,1,'S0001','2025-04-16',8500,'U0002'),(2,1,'S0002','2025-04-16',100000,'U0002'),(3,1,'S0003','2025-04-16',100000,'U0002');
+INSERT INTO `sales` VALUES (1,0,0,0,800,0,'Full Payment',1,0,'S0001','2025-04-19',1,800,'U0002'),(2,137.5,25,0,550,68.75,'Lay By',1,4,'S0002','2025-04-19',0,550,'U0002'),(3,0,0,0,550,0,'Full Payment',1,0,'S0003','2025-04-19',1,550,'U0002'),(4,0,0,5,760,0,'Full Payment',1,0,'S0004','2025-04-19',1,800,'U0002');
 /*!40000 ALTER TABLE `sales` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -151,7 +159,7 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES ('admin','Admin'),('kethaka','Customer');
+INSERT INTO `user_role` VALUES ('admin','Admin'),('test','Customer');
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,10 +173,13 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `user_name` varchar(255) NOT NULL,
   `adress` varchar(255) DEFAULT NULL,
+  `discount_rate` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `tel` varchar(255) DEFAULT NULL,
+  `update_date` varchar(255) DEFAULT NULL,
   `user_id` varchar(255) DEFAULT NULL,
   `user_password` varchar(255) DEFAULT NULL,
+  `user_grade` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -179,7 +190,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('admin',NULL,NULL,NULL,'U0001','$2a$10$0Bw9qTHVukbMBPRmuCwsAuRbA3WVASbWiCMeRPqMS.68OFRfb4SkK'),('kethaka','Kotugoda','admin@gmail.com','0774477984','U0002','$2a$10$0TJ4vagm4B1Qy2e79xAh/eyErcOIaZSsog8Vdlo0qyyCqsE1xVRay');
+INSERT INTO `users` VALUES ('admin',NULL,NULL,NULL,NULL,NULL,'U0001','$2a$10$rwnj/9TmRfFwBR/a2G6CRONUTKKMBTxH/UWetsiqGEBEiHITu121m',NULL),('test','test','10','test@gmail.com','0774477984','2025-04-19 17:20:55','U0002','$2a$10$4PhR253Ez/DV0Jsbe/hkOe/8MmlAlQak8H.F5aNPYoC/ERxp81uyu','gold');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -192,4 +203,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-16 17:15:39
+-- Dump completed on 2025-04-22  7:30:31

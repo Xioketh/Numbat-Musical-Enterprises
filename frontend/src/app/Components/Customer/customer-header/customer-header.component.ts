@@ -1,6 +1,6 @@
 import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import Swal from "sweetalert2";
-import { faBox, faCartPlus, faUser } from '@fortawesome/free-solid-svg-icons';
+import {faArrowRightFromBracket, faBox, faCartPlus, faUser} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -15,10 +15,12 @@ export class CustomerHeaderComponent {
   faBox = faBox;
   faCartPlus = faCartPlus;
   faUser = faUser;
+  faArrowRightFromBracket = faArrowRightFromBracket;
 
   isSticky: boolean = false;
   openCart: boolean = false;
   openSales: boolean = false;
+  openProfileView: boolean = false;
   showMyOrders: boolean = false;
 
   userRole: any;
@@ -28,6 +30,7 @@ export class CustomerHeaderComponent {
 
   @Output() openCartAccess = new EventEmitter<any>();
   @Output() openSalesAccess = new EventEmitter<any>();
+  @Output() openProfileAccess = new EventEmitter<any>();
 
   @HostListener('window:scroll', ['$event'])
   checkScroll() {
@@ -42,15 +45,16 @@ export class CustomerHeaderComponent {
   }
 
   constructor() {
-    const roleString = localStorage.getItem('role');
-    this.userRole = roleString !== null ? roleString : null;
-
-    console.log(this.userRole)
-    if (this.userRole == "Customer") {
-      this.showMyOrders = true;
-    } else {
-      localStorage.setItem('role', "Guest")
+    if (typeof window !== 'undefined' && localStorage) {
+      const roleString = localStorage.getItem('role');
+      this.userRole = roleString !== null ? roleString : null;
+      if (this.userRole == "Customer") {
+        this.showMyOrders = true;
+      } else {
+        localStorage.setItem('role', "Guest")
+      }
     }
+
   }
 
   cartView() {
@@ -62,6 +66,11 @@ export class CustomerHeaderComponent {
   salesView() {
     this.openSales = true;
     this.openSalesAccess.emit(this.openSales)
+  }
+
+  onProfileView(){
+    this.openProfileView = true;
+    this.openProfileAccess.emit(this.openProfileView)
   }
 
   onLog() {

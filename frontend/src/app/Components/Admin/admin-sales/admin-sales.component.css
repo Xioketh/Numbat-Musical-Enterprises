@@ -63,3 +63,47 @@
     -webkit-transform: scale(0.9);
     -ms-transform: scale(1.25)
 }
+
+.lay-by {
+  font-weight: bold;
+  color: red;
+}
+
+.full-payment {
+  /*font-size: 8px;*/
+  font-weight: bold;
+  color: green;
+}
+
+ .detail-item {
+   background: #f8f9fa;
+   padding: 10px;
+   border-radius: 5px;
+   height: 100%;
+ }
+
+.month-indicator {
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.month-indicator.bg-success {
+  color: white;
+}
+
+.month-number {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.month-status {
+  display: block;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+.progress-container {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+}

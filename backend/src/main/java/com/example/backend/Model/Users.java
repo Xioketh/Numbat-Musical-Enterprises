@@ -15,6 +15,9 @@ public class Users {
     private String email;
     private String userPassword;
     private String userId;
+    private String user_grade;
+    private String discount_rate;
+    private String update_date;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_ROLE",
@@ -35,14 +38,6 @@ public class Users {
         this.email = email;
         this.userPassword = userPassword;
         this.role = role;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getUserName() {
@@ -83,6 +78,38 @@ public class Users {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUser_grade() {
+        return user_grade;
+    }
+
+    public void setUser_grade(String user_grade) {
+        this.user_grade = user_grade;
+    }
+
+    public String getDiscount_rate() {
+        return discount_rate;
+    }
+
+    public void setDiscount_rate(String discount_rate) {
+        this.discount_rate = discount_rate;
+    }
+
+    public String getUpdate_date() {
+        return update_date;
+    }
+
+    public void setUpdate_date(String update_date) {
+        this.update_date = update_date;
     }
 
     public Set<Role> getRole() {

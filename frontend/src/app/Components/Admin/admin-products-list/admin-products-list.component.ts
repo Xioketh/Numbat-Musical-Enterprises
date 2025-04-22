@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, NgZone, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
@@ -8,13 +8,14 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import {ProductService} from "../../../Services/product.service";
 import {DashbordService} from "../../../Services/dashbord.service";
+import JsBarcode from 'jsbarcode';
 
 @Component({
   selector: 'app-admin-products-list',
   templateUrl: './admin-products-list.component.html',
   styleUrl: './admin-products-list.component.css'
 })
-export class AdminProductsListComponent {
+export class AdminProductsListComponent{
   countObj: any = [];
   displayedColumns: string[] = [
     'image1',
@@ -33,16 +34,41 @@ export class AdminProductsListComponent {
   productForm: FormGroup = new FormGroup({});
 
   enableEdit: boolean = false;
+  barcodeReady: boolean = false;
 
   modalRef: any;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('productPopup') productPopup: ElementRef | undefined;
-  constructor(private fb: FormBuilder, private productService: ProductService, private modal: NgbModal, private dashBoardService: DashbordService) {
+  @ViewChild('barcodeCanvas', { static: false }) barcodeCanvas!: ElementRef;
+  constructor(private fb: FormBuilder, private productService: ProductService, private modal: NgbModal, private dashBoardService: DashbordService, private zone: NgZone) {
     this.getAllProducts();
     this.getCount();
   }
+
+
+
+  generateBarcode(): void {
+    try {
+      // Make sure the DOM element is available
+      if (document.getElementById('productBarcode')) {
+        JsBarcode('#productBarcode', this.selectedProduct.productID, {
+          format: 'CODE128',
+          width: 2,
+          height: 50,
+          displayValue: false,
+          margin: 10,
+          background: '#ffffff',
+          lineColor: '#000000'
+        });
+      }
+    } catch (error) {
+      console.error('Error generating barcode:', error);
+    }
+  }
+
+
 
   getCount() {
     this.dashBoardService.getCount().subscribe(
@@ -68,9 +94,6 @@ export class AdminProductsListComponent {
         }
       });
     }
-
-
-
   }
 
   getAllProducts() {
@@ -117,7 +140,7 @@ export class AdminProductsListComponent {
 
   productPreview(selectedProducts: any, i: number) {
     this.selectedProduct = selectedProducts;
-    console.log(this.selectedProduct);
+
     this.productForm.patchValue({
       category: this.selectedProduct.category,
       createDate: this.selectedProduct.createDate,
@@ -129,16 +152,11 @@ export class AdminProductsListComponent {
     });
 
     this.modalRef = this.modal.open(this.productPopup, { centered: true });
+    this.enableEdit = i === 1;
 
-    switch (i) {
-      case 1:
-        this.enableEdit = true;
-        break;
-      case 2:
-        this.enableEdit = false;
-        break;
-    }
-
+    setTimeout(() => {
+      this.generateBarcode();
+    }, 300);
   }
 
   productDelete(selectedProducts: any) {
@@ -193,6 +211,21 @@ export class AdminProductsListComponent {
       }
     );
 
+  }
 
+  downloadBarcode(productCode: string) {
+    const canvas = document.createElement('canvas');
+    JsBarcode(canvas, productCode, {
+      format: 'CODE128',
+      displayValue: true,
+      height: 100,
+      width: 2,
+      fontSize: 16,
+    });
+
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = `${productCode}-barcode.png`;
+    link.click();
   }
 }

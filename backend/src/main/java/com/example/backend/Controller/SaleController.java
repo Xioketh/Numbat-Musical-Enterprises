@@ -41,5 +41,10 @@ public class SaleController {
         return saleService.getReportData(startDate,endDate);
     }
 
+    @PostMapping(value = "/mounthlyPayment")
+    public ResponseEntity<?> mounthlyPayment(@RequestParam ("order_id") String orderID) {
+        return saleService.mounthlyPayment(orderID);
+    }
+
 
 }

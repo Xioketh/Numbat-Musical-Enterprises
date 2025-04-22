@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -72,6 +73,13 @@ public class UsersService {
         }
 
         return usersRepository.save(user);
+    }
+
+
+    public ResponseEntity<?> getByUserId(Users user) {
+        System.out.println(user.getUserId());
+        Optional<Users> u= usersRepository.findByUserId(user.getUserId());
+        return ResponseEntity.ok(u.get());
     }
 
     public boolean isUserNameExists(String userName) {

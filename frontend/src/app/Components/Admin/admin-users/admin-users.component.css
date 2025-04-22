@@ -63,3 +63,27 @@
     -webkit-transform: scale(0.9);
     -ms-transform: scale(1.25)
 }
+
+
+.grade-gold {
+  color: goldenrod;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.grade-silver {
+  color: silver;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.grade-platinum {
+  color: #4e7ac7; /* You can use #e5e4e2 or a blueish tone */
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.grade-default {
+  color: gray;
+  font-weight: normal;
+}

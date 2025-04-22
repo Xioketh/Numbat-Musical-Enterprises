@@ -89,4 +89,10 @@ public class UsersController {
         return passwordEncoder.encode(password);
     }
 
+
+    @PostMapping({"/getByUserId"})
+    public ResponseEntity<?> getByUserId(@RequestBody Users user) {
+        return userService.getByUserId(user);
+    }
+
 }
