@@ -151,22 +151,23 @@ public class SaleService {
                     .map(this::convertSalesToSalesDTO)
                     .collect(Collectors.toList());
 
-            for (SaleDto saleDto : saleDtos) {
-                try {
-                    List<SaleItems> saleItems = saleItemRepository.getSaleItems(saleDto.getSaleId());
-                    List<Products> products = new ArrayList<>();
-                    for (SaleItems saleItem : saleItems) {
-                        try {
-                            List<Products> product = productRepository.getProductById(saleItem.getProductId());
-                            products.addAll(product);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    saleDto.setProducts(products);
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+            for (SaleDto dto : saleDtos) {
+                List<SaleItems> saleItems = saleItemRepository.getSaleItems(dto.getSaleId());
+
+                List<SaleItemsDto> saleItemsDtoList = saleItems.stream()
+                        .map(this::convertSaleItemsToSalesItemDTO)
+                        .collect(Collectors.toList());
+
+                List<SaleItemsDto> saleItemsWithProducts = new ArrayList<>();
+
+                for (SaleItemsDto saleItemsDto : saleItemsDtoList) {
+                    Optional<Products> product = productRepository.getProductByIdOptional(saleItemsDto.getProductId());
+                    saleItemsDto.setProducts(product.get());
+                    saleItemsWithProducts.add(saleItemsDto);
                 }
+
+                dto.setSaleItemsDtos(saleItemsWithProducts);
             }
 
             return ResponseEntity.ok(saleDtos);
